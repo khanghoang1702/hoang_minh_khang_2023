@@ -7,7 +7,9 @@ import {AuthEntity} from "./entities/auth.entity";
 import {UsersModule} from "../users/users.module";
 
 @Module({
-    imports: [JwtModule.register({}),
+    imports: [JwtModule.register({
+        global: true
+    }),
         TypeOrmModule.forFeature([AuthEntity]),
         UsersModule],
     controllers: [AuthController],

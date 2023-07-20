@@ -3,13 +3,14 @@ import {BlogModule} from './modules/blog/blog.module';
 import {ConfigModule} from '@nestjs/config';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {DataSource} from "typeorm";
-import {APP_INTERCEPTOR} from "@nestjs/core";
+import {APP_GUARD, APP_INTERCEPTOR} from "@nestjs/core";
 import {ResponseTransformInterceptor} from "./interceptors/response.interceptor";
 import {migrations} from './database';
 import {CommentModule} from './modules/comment/comment.module';
 import {CloudinaryModule} from './modules/cloudinary/cloudinary.module';
 import {AuthModule} from "./modules/auth/auth.module";
 import {UsersModule} from "./modules/users/users.module";
+import {AuthGuard} from "./modules/auth/guards/auth.guard";
 
 
 @Module({
@@ -48,6 +49,10 @@ import {UsersModule} from "./modules/users/users.module";
             provide: APP_INTERCEPTOR,
             useClass: ClassSerializerInterceptor,
         },
+        {
+            provide: APP_GUARD,
+            useClass: AuthGuard,
+        }
     ],
 })
 export class AppModule {

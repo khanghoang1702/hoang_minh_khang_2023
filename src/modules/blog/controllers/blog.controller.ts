@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UploadedFiles, UseInterceptors } from '@nestjs/common';
-import { BlogService } from '../services/blog.service';
-import { CreateBlogDto } from '../dtos/create-blog.dto';
-import { UpdateBlogDto } from '../dtos/update-blog.dto';
+import {Body, Controller, Delete, Get, Param, Patch, Post, Put, UploadedFiles, UseInterceptors} from '@nestjs/common';
+import {BlogService} from '../services/blog.service';
+import {CreateBlogDto} from '../dtos/create-blog.dto';
+import {UpdateBlogDto} from '../dtos/update-blog.dto';
 import {
     ApiConsumes,
     ApiCreatedResponse,
@@ -14,12 +14,13 @@ import {
     ApiUnauthorizedResponse,
     getSchemaPath,
 } from '@nestjs/swagger';
-import { FilesInterceptor } from '@nestjs/platform-express';
-import { ApiMultiFiles } from 'src/decorators/api-files.decorator';
-import { v4 as uuidv4 } from 'uuid';
-import { diskStorage } from "multer";
+import {FilesInterceptor} from '@nestjs/platform-express';
+import {ApiMultiFiles} from 'src/decorators/api-files.decorator';
+import {v4 as uuidv4} from 'uuid';
+import {diskStorage} from "multer";
 import path from 'path';
-import { BlogEntity } from '../entities/blog.entity';
+import {BlogEntity} from '../entities/blog.entity';
+import {Public} from "../../auth/decorators/public.decorator";
 
 export const storage = {
     storage: diskStorage({
@@ -34,21 +35,23 @@ export const storage = {
 
 }
 
-@Controller('blog')
+@Controller('blogs')
 export class BlogController {
-    constructor(private blogService: BlogService) { }
+    constructor(private blogService: BlogService) {
+    }
 
-    @ApiOperation({ summary: 'Get blog list' })
+    @ApiOperation({summary: 'Get blog list'})
     @ApiOkResponse({
         description: '200. Success. Returns blog list',
     })
+    @Public()
     @Get()
     getBlogList() {
         return this.blogService.getBlogs()
     }
 
-    @ApiOperation({ summary: 'Get blog detail' })
-    @ApiParam({ name: 'blogId', type: String })
+    @ApiOperation({summary: 'Get blog detail'})
+    @ApiParam({name: 'blogId', type: String})
     @ApiOkResponse({
         description: '200. Success. Returns a blog',
     })
@@ -60,14 +63,14 @@ export class BlogController {
         return this.blogService.getBlog(blogId)
     }
 
-    @ApiOperation({ summary: 'Write a blog' })
+    @ApiOperation({summary: 'Write a blog'})
     @Post()
     createBlog(@Body() blog: CreateBlogDto) {
         return this.blogService.createBlog(blog)
     }
 
-    @ApiOperation({ summary: 'upload blog images' })
-    @ApiParam({ name: 'blogId', type: String })
+    @ApiOperation({summary: 'upload blog images'})
+    @ApiParam({name: 'blogId', type: String})
     @ApiConsumes('multipart/form-data')
     @ApiMultiFiles()
     @Post('/upload/:blogId')
@@ -79,14 +82,14 @@ export class BlogController {
         return this.blogService.uploadPostImages(blogId, files)
     }
 
-    @ApiOperation({ summary: 'update a blog' })
+    @ApiOperation({summary: 'update a blog'})
     @Put('/:blogId')
     updateBlog(@Param('blogId') blogId: string, @Body() blog: UpdateBlogDto) {
         return this.blogService.updateBlog(blogId, blog)
     }
 
-    @ApiOperation({ summary: 'Delete a blog' })
-    @ApiParam({ name: 'blogId', type: String })
+    @ApiOperation({summary: 'Delete a blog'})
+    @ApiParam({name: 'blogId', type: String})
     @Delete('/:blogId')
     deleteBlog(@Param('blogId') blogId: string) {
         return this.blogService.remove(blogId)
