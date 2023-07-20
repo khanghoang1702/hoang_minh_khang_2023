@@ -11,6 +11,6 @@ export class AuthEntity extends TypeOrmBaseEntity {
     @Column({type: 'varchar', nullable: true})
     refreshToken: string;
 
-    @OneToOne(() => UsersEntity, (user) => user.id)
+    @OneToOne(() => UsersEntity)
     user: UsersEntity;
 }

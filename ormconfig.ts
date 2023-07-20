@@ -15,7 +15,7 @@ export default new DataSource({
     password: String(process.env.DB_PASSWORD),
     database: process.env.DB_DATABASE_NAME,
     entities: ["dist/src/modules/**/entities/**/*{.js,.ts}"],
-    migrations: ["dist/migrations/**/*{.js,.ts}"],
+    migrations: ["dist/databases/migrations/**/*{.js,.ts}"],
     migrationsTableName: process.env.MIGRATIONS_TABLE_NAME,
     logging: true,
 } as any);

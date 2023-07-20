@@ -7,8 +7,9 @@ import {
     UpdateDateColumn,
     VersionColumn,
     BaseEntity,
-    ManyToOne
+    ManyToOne, OneToOne
 } from 'typeorm';
+import {UsersEntity} from "../../users/entities/users.entity";
 
 @Entity('comments')
 export class CommentEntity extends BaseEntity {
@@ -18,8 +19,8 @@ export class CommentEntity extends BaseEntity {
     @Column()
     content: string;
 
-    @Column()
-    author: string;
+    @ManyToOne(() => UsersEntity)
+    author: UsersEntity;
 
     @ManyToOne(() => BlogEntity, (blog) => blog.comments)
     blog: BlogEntity

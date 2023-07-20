@@ -23,13 +23,15 @@ export class AuthService {
             throw new BadRequestException('Invalid Credentials');
         }
 
+        const payload = {email: email}
+
         const isPasswordValid = await AuthHelper.isValidPassword(password, user.password)
 
         if (!isPasswordValid) {
             throw new BadRequestException('Invalid Password');
         }
 
-        return this.tokenGenerator({email})
+        return this.tokenGenerator(payload)
     }
 
     async register(dto: RegisterDto) {

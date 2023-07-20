@@ -5,11 +5,15 @@ import {Repository} from "typeorm";
 import {CreateUserDto} from "../dtos/create-user.dto";
 import {UpdateUserDto} from "../dtos/update-user.dto";
 import {CloudinaryService} from "../../cloudinary/cloudinary.service";
+import {RolesEntity} from "../entities/roles.entity";
+import {Roles} from "../enums/roles.enum";
 
 @Injectable()
 export class UsersService {
     constructor(@InjectRepository(UsersEntity)
                 private usersRepository: Repository<UsersEntity>,
+                @InjectRepository(RolesEntity)
+                private rolesRepository: Repository<RolesEntity>,
                 private cloudinaryService: CloudinaryService,
     ) {
     }
@@ -35,8 +39,9 @@ export class UsersService {
 
     async createUser(dto: CreateUserDto) {
         try {
-            const createdUser = await this.usersRepository.create({...dto})
-            const res = await this.usersRepository.save(createdUser)
+            const role = await this.rolesRepository.findOne({where: {type: Roles.User}});
+            const createdUser = await this.usersRepository.create({...dto, ...role});
+            const res = await this.usersRepository.save(createdUser);
 
             return res
         } catch (e) {
@@ -49,7 +54,7 @@ export class UsersService {
         try {
             const user = await this.findOne(id);
             if (!user) {
-                throw new BadRequestException('User already exist');
+                throw new BadRequestException('User not found');
             }
             const preloadUser = await this.usersRepository.preload({...user, ...dto})
 

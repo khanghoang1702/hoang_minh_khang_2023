@@ -12,7 +12,7 @@ export class CommentService {
         try {
             const blog = await this.blogService.getBlog(comment.blog);
             const newComment = new CommentEntity();
-            newComment.author = comment.author;
+            // newComment.author = comment.author;
             newComment.content = comment.content;
             newComment.blog = blog;
 

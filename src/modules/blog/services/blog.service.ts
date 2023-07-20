@@ -20,7 +20,7 @@ export class BlogService {
             const newBlog = new BlogEntity();
             newBlog.title = blog.title;
             newBlog.content = blog.content;
-            newBlog.author = blog.author;
+            // newBlog.author = blog.author;
             return await this.blogRepository.save(newBlog);
         } catch (error) {
             throw error
