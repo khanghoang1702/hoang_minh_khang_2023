@@ -4,19 +4,21 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CommentEntity } from '../entities/comment.entity';
 import { Repository } from 'typeorm';
 import { BlogService } from 'src/modules/blog/services/blog.service';
+import {UsersService} from "../../users/services/users.service";
 
 @Injectable()
 export class CommentService {
-    constructor(@InjectRepository(CommentEntity) private commentRepository: Repository<CommentEntity>, private blogService: BlogService) { }
-    async createComment(comment: CreateCommentDto) {
+    constructor(@InjectRepository(CommentEntity)
+                private commentRepository: Repository<CommentEntity>,
+                private usersService: UsersService,
+                private blogService: BlogService) { }
+    async createComment(comment: CreateCommentDto, email: string, blogId: string) {
         try {
-            const blog = await this.blogService.getBlog(comment.blog);
-            const newComment = new CommentEntity();
-            // newComment.author = comment.author;
-            newComment.content = comment.content;
-            newComment.blog = blog;
+            const author = await this.usersService.findUserByEmail(email);
+            const blog = await this.blogService.getBlog(blogId);
+            const newComment = await this.commentRepository.preload({...comment, blog, author})
 
-            return this.commentRepository.save(newComment);
+            return await this.commentRepository.save(newComment);
         } catch (error) {
             throw error;
         }

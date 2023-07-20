@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post, Put, UploadedFiles, UseInterceptors} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Post, Put, UploadedFiles, UseInterceptors, Request} from '@nestjs/common';
 import {BlogService} from '../services/blog.service';
 import {CreateBlogDto} from '../dtos/create-blog.dto';
 import {UpdateBlogDto} from '../dtos/update-blog.dto';
@@ -21,6 +21,7 @@ import {diskStorage} from "multer";
 import path from 'path';
 import {BlogEntity} from '../entities/blog.entity';
 import {Public} from "../../auth/decorators/public.decorator";
+import {VoteDto} from "../dtos/vote.dto";
 
 export const storage = {
     storage: diskStorage({
@@ -65,27 +66,34 @@ export class BlogController {
 
     @ApiOperation({summary: 'Write a blog'})
     @Post()
-    createBlog(@Body() blog: CreateBlogDto) {
-        return this.blogService.createBlog(blog)
+    createBlog(@Request() req, @Body() blog: CreateBlogDto) {
+        const email: string = req.user.email
+        return this.blogService.createBlog(blog, email)
     }
 
-    @ApiOperation({summary: 'upload blog images'})
-    @ApiParam({name: 'blogId', type: String})
-    @ApiConsumes('multipart/form-data')
-    @ApiMultiFiles()
-    @Post('/upload/:blogId')
-    @UseInterceptors(FilesInterceptor('files', null, storage))
-    async uploadPostImages(
-        @Param('blogId') blogId: string,
-        @UploadedFiles() files: Array<Express.Multer.File>
-    ): Promise<any> {
-        return this.blogService.uploadPostImages(blogId, files)
-    }
+    // @ApiOperation({summary: 'upload blog images'})
+    // @ApiParam({name: 'blogId', type: String})
+    // @ApiConsumes('multipart/form-data')
+    // @ApiMultiFiles()
+    // @Post('/upload/:blogId')
+    // @UseInterceptors(FilesInterceptor('files', null, storage))
+    // async uploadPostImages(
+    //     @Param('blogId') blogId: string,
+    //     @UploadedFiles() files: Array<Express.Multer.File>
+    // ): Promise<any> {
+    //     return this.blogService.uploadPostImages(blogId, files)
+    // }
 
     @ApiOperation({summary: 'update a blog'})
     @Put('/:blogId')
     updateBlog(@Param('blogId') blogId: string, @Body() blog: UpdateBlogDto) {
         return this.blogService.updateBlog(blogId, blog)
+    }
+
+    @ApiOperation({summary: 'vote a blog'})
+    @Post('/:blogId')
+    vote(@Param('blogId') blogId: string, @Body() vote: VoteDto) {
+        return this.blogService.vote(blogId, vote.type)
     }
 
     @ApiOperation({summary: 'Delete a blog'})

@@ -4,9 +4,10 @@ import { BlogService } from './services/blog.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BlogEntity } from './entities/blog.entity';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
+import {UsersModule} from "../users/users.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([BlogEntity]), CloudinaryModule],
+  imports: [TypeOrmModule.forFeature([BlogEntity]), UsersModule, CloudinaryModule],
   controllers: [BlogController],
   providers: [BlogService],
   exports: [BlogService]

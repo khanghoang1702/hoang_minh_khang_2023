@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Request } from '@nestjs/common';
 import { CommentService } from '../services/comment.service';
 import { CreateCommentDto } from '../dtos/create-blog.dto';
 import { ApiOperation, ApiParam } from '@nestjs/swagger';
@@ -16,8 +16,11 @@ export class CommentController {
 
     @ApiOperation({ summary: 'Create a comment' })
     @Post()
-    comment(@Body() comment: CreateCommentDto) {
-        return this.commentService.createComment(comment)
+    comment(@Request() req,@Body() comment: CreateCommentDto) {
+        const email = req.user?.email;
+        const blogId = comment.blog
+        delete comment.blog
+        return this.commentService.createComment(comment, email, blogId)
     }
 
     @ApiOperation({ summary: 'Delete a comment' })
