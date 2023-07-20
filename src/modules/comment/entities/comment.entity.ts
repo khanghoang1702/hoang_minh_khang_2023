@@ -1,7 +1,16 @@
-import { BlogEntity } from 'src/modules/blog/entities/blog.entity';
-import { PrimaryGeneratedColumn, Column, Entity, CreateDateColumn, UpdateDateColumn, VersionColumn, BaseEntity, ManyToOne } from 'typeorm';
+import {BlogEntity} from 'src/modules/blog/entities/blog.entity';
+import {
+    PrimaryGeneratedColumn,
+    Column,
+    Entity,
+    CreateDateColumn,
+    UpdateDateColumn,
+    VersionColumn,
+    BaseEntity,
+    ManyToOne
+} from 'typeorm';
 
-@Entity('Comment')
+@Entity('comments')
 export class CommentEntity extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -15,10 +24,10 @@ export class CommentEntity extends BaseEntity {
     @ManyToOne(() => BlogEntity, (blog) => blog.comments)
     blog: BlogEntity
 
-    @Column({ name: 'likeCount', default: 0 })
+    @Column({name: 'likeCount', default: 0})
     likeCount: number;
 
-    @Column({ name: 'dislikeCount', default: 0 })
+    @Column({name: 'dislikeCount', default: 0})
     dislikeCount: number;
 
     @CreateDateColumn()
