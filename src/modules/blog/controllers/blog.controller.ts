@@ -87,13 +87,13 @@ export class BlogController {
     // }
 
     @ApiOperation({summary: 'update a blog'})
-    @Put('/:blogId')
+    @Patch('/:blogId')
     updateBlog(@Param('blogId') blogId: string, @Body() blog: UpdateBlogDto) {
         return this.blogService.updateBlog(blogId, blog)
     }
 
     @ApiOperation({summary: 'vote a blog'})
-    @Post('/:blogId')
+    @Post('/vote/:blogId')
     vote(@Param('blogId') blogId: string, @Body() vote: VoteDto) {
         return this.blogService.vote(blogId, vote.type)
     }
@@ -106,7 +106,7 @@ export class BlogController {
     }
 
     @ApiOperation({summary: 'publish a blog'})
-    @Put('/:blogId')
+    @Post('/publish/:blogId')
     publish(@Param('blogId') blogId: string) {
         return this.blogService.publishBlog(blogId)
     }
