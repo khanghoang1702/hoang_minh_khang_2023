@@ -10,20 +10,24 @@ import {UpdateBlogDto} from '../dtos/update-blog.dto';
 import {CloudinaryService} from 'src/modules/cloudinary/cloudinary.service';
 import {UpdateBlogImagesDto} from '../dtos/update-blog-images.dto';
 import {UsersService} from "../../users/services/users.service";
+import {CategoriesEntity} from "../entities/categories.entity";
 
 @Injectable()
 export class BlogService {
 
     constructor(@InjectRepository(BlogEntity)
                 private blogRepository: Repository<BlogEntity>,
+                @InjectRepository(CategoriesEntity)
+                private categoryRepository: Repository<CategoriesEntity>,
                 private usersService: UsersService,
                 private cloudinary: CloudinaryService) {
     }
 
-    async createBlog(blog: CreateBlogDto, authorEmail: string): Promise<BlogEntity> {
+    async createBlog(blog: CreateBlogDto, authorEmail: string, categoryId: string): Promise<BlogEntity> {
         try {
             const author = await this.usersService.findUserByEmail(authorEmail)
-            const newBlog = await this.blogRepository.preload({...blog, author})
+            const category = await this.categoryRepository.findOne({where: {id: categoryId }})
+            const newBlog = await this.blogRepository.preload({...blog, author, category})
 
             return await this.blogRepository.save(newBlog);
         } catch (error) {

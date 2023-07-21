@@ -68,7 +68,9 @@ export class BlogController {
     @Post()
     createBlog(@Request() req, @Body() blog: CreateBlogDto) {
         const email: string = req.user.email
-        return this.blogService.createBlog(blog, email)
+        const category: string = blog.category;
+        delete blog.category
+        return this.blogService.createBlog(blog, email, category)
     }
 
     // @ApiOperation({summary: 'upload blog images'})

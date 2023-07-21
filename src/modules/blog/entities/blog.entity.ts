@@ -1,6 +1,6 @@
 import {TypeOrmBaseEntity} from 'src/commons/abstract-entity/type-orm-base-entity.entity';
 import {CommentEntity} from 'src/modules/comment/entities/comment.entity';
-import {Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne} from 'typeorm';
+import {Column, Entity, ManyToOne, OneToMany, OneToOne} from 'typeorm';
 import {UsersEntity} from "../../users/entities/users.entity";
 import {CategoriesEntity} from "./categories.entity";
 
@@ -18,9 +18,8 @@ export class BlogEntity extends TypeOrmBaseEntity {
     @OneToMany(() => CommentEntity, (comment) => comment.blog)
     comments: CommentEntity[]
 
-    @ManyToMany(() => CategoriesEntity)
-    @JoinTable()
-    categories: CategoriesEntity[]
+    @OneToOne(() => CategoriesEntity)
+    category: CategoriesEntity
 
     @Column({type: 'boolean', default: false})
     published: boolean;

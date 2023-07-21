@@ -1,5 +1,6 @@
 import {Init1684657759548} from "./migrations/1684657759548-init";
-import {CreateTables1689842792555} from "./migrations/1689842792555-create-tables";
+import {CreateSchema1689908981894} from "./migrations/1689908981894-create-schema";
 
 
-export const migrations = [Init1684657759548, CreateTables1689842792555];
+
+export const migrations = [Init1684657759548, CreateSchema1689908981894];
