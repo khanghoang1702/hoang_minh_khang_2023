@@ -103,4 +103,10 @@ export class BlogController {
         return this.blogService.remove(blogId)
     }
 
+    @ApiOperation({summary: 'publish a blog'})
+    @Put('/:blogId')
+    publish(@Param('blogId') blogId: string) {
+        return this.blogService.publishBlog(blogId)
+    }
+
 }

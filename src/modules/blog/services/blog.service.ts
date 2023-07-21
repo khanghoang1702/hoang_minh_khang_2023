@@ -78,8 +78,8 @@ export class BlogService {
 
     }
 
-    vote (type: string, blogId: string) {
-        if(type === 'up') {
+    vote(type: string, blogId: string) {
+        if (type === 'up') {
             return this.upvote(blogId);
         }
         return this.downvote(blogId)
@@ -101,6 +101,15 @@ export class BlogService {
             ...blog,
             like: blog.like - 1,
             dislike: blog.like
+        })
+        return await this.blogRepository.save(blogInstance);
+    }
+
+    async publishBlog(blogId: string) {
+        const blog = await this.getBlog(blogId);
+        const blogInstance = await this.blogRepository.preload({
+            ...blog,
+            published: true
         })
         return await this.blogRepository.save(blogInstance);
     }
