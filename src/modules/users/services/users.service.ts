@@ -40,7 +40,9 @@ export class UsersService {
     async createUser(dto: CreateUserDto) {
         try {
             const role = await this.rolesRepository.findOne({where: {type: Roles.User}});
-            const createdUser = await this.usersRepository.create({...dto, ...role});
+            dto['role'] = role
+            const createdUser = this.usersRepository.create(dto);
+            console.log(createdUser, 'dddddddddddd')
             const res = await this.usersRepository.save(createdUser);
 
             return res

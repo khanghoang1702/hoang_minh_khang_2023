@@ -13,7 +13,7 @@ export class BlogEntity extends TypeOrmBaseEntity {
     @Column({type: 'json', nullable: true})
     content: BlogContentModel | null;
 
-    @ManyToOne(() => UsersEntity)
+    @ManyToOne(() => UsersEntity, (author) => author.blogs)
     author: UsersEntity;
 
     @OneToMany(() => CommentEntity, (comment) => comment.blog)

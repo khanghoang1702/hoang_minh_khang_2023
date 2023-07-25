@@ -16,7 +16,7 @@ export class CommentService {
         try {
             const author = await this.usersService.findUserByEmail(email);
             const blog = await this.blogService.getBlog(blogId);
-            const newComment = await this.commentRepository.preload({...comment, blog, author})
+            const newComment = await this.commentRepository.create({...comment, blog, author})
 
             return await this.commentRepository.save(newComment);
         } catch (error) {

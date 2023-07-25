@@ -4,6 +4,5 @@ const enum VOTE {
 }
 
 export class VoteDto {
-    
     type: VOTE
 }

@@ -27,9 +27,10 @@ export class BlogService {
         try {
             const author = await this.usersService.findUserByEmail(authorEmail)
             const category = await this.categoryRepository.findOne({where: {id: categoryId }})
-            const newBlog = await this.blogRepository.preload({...blog, author, category})
+            const newBlog = {...blog, author, category}
+            const blogInstance = await this.blogRepository.create(newBlog)
 
-            return await this.blogRepository.save(newBlog);
+            return await this.blogRepository.save(blogInstance);
         } catch (error) {
             throw error
         }
@@ -38,7 +39,7 @@ export class BlogService {
 
     async getBlogs() {
         try {
-            return await this.blogRepository.find({relations: {author: true}});
+            return await this.blogRepository.find({relations: {author: true, category: true}});
 
         } catch (error) {
             throw error
@@ -48,7 +49,7 @@ export class BlogService {
     async getBlog(id: string) {
         try {
             const blog = await this.blogRepository.findOne({
-                where: {id: id}, relations: {author: true}
+                where: {id: id}, relations: {author: true, category: true}
             });
             if (!blog) {
                 throw new NotFoundException('Blog not found');
@@ -82,7 +83,7 @@ export class BlogService {
 
     }
 
-    vote(type: string, blogId: string) {
+    vote(blogId: string, type: string) {
         if (type === 'up') {
             return this.upvote(blogId);
         }

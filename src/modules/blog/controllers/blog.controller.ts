@@ -95,6 +95,7 @@ export class BlogController {
     @ApiOperation({summary: 'vote a blog'})
     @Post('/vote/:blogId')
     vote(@Param('blogId') blogId: string, @Body() vote: VoteDto) {
+        console.log(blogId, vote)
         return this.blogService.vote(blogId, vote.type)
     }
 
