@@ -3,14 +3,15 @@ import {CommentEntity} from 'src/modules/comment/entities/comment.entity';
 import {Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne} from 'typeorm';
 import {UsersEntity} from "../../users/entities/users.entity";
 import {CategoriesEntity} from "./categories.entity";
+import {BlogContentModel} from "../models/blog-content.model";
 
 @Entity('blogs')
 export class BlogEntity extends TypeOrmBaseEntity {
-    @Column()
+    @Column({type: 'varchar', nullable: true})
     title: string;
 
-    @Column()
-    content: string;
+    @Column({type: 'json', nullable: true})
+    content: BlogContentModel | null;
 
     @ManyToOne(() => UsersEntity)
     author: UsersEntity;
