@@ -51,18 +51,14 @@ export class BlogController {
         return this.blogService.getBlogs()
     }
 
-    @ApiOperation({summary: 'Get blog detail'})
-    @ApiParam({name: 'blogId', type: String})
+    @ApiOperation({summary: 'Get categories'})
     @ApiOkResponse({
-        description: '200. Success. Returns a blog',
-    })
-    @ApiNotFoundResponse({
-        description: '404. NotFoundException. User was not found',
+        description: '200. Success. Returns a categories list',
     })
     @Public()
-    @Get('/:blogId')
-    getBlog(@Param('blogId') blogId: string) {
-        return this.blogService.getBlog(blogId)
+    @Get('/categories')
+    getCategories() {
+        return this.blogService.getCategories()
     }
 
     @ApiOperation({summary: 'Get blog detail'})
@@ -71,13 +67,15 @@ export class BlogController {
         description: '200. Success. Returns a blog',
     })
     @ApiNotFoundResponse({
-        description: '404. NotFoundException. User was not found',
+        description: '404. NotFoundException. blog was not found',
     })
     @Public()
-    @Get('/categories')
-    getCategories() {
-        return this.blogService.getCategories()
+    @Get('/:blogId')
+    getBlog(@Param('blogId') blogId: string) {
+        return this.blogService.getBlog(blogId)
     }
+
+
 
     @ApiOperation({summary: 'Write a blog'})
     @Post()
