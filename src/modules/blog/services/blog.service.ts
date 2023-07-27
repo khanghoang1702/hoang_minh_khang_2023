@@ -119,6 +119,17 @@ export class BlogService {
         return await this.blogRepository.save(blogInstance);
     }
 
+    async getCategories(): Promise<CategoriesEntity[]> {
+        try {
+            const category = await this.categoryRepository.find();
+
+            return category
+        } catch (error) {
+            throw error
+        }
+
+    }
+
     // async uploadPostImages(blogId: string, images: Express.Multer.File[]): Promise<any> {
     //     try {
     //         const imgArr = [];

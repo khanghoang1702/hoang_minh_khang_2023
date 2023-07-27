@@ -65,6 +65,20 @@ export class BlogController {
         return this.blogService.getBlog(blogId)
     }
 
+    @ApiOperation({summary: 'Get blog detail'})
+    @ApiParam({name: 'blogId', type: String})
+    @ApiOkResponse({
+        description: '200. Success. Returns a blog',
+    })
+    @ApiNotFoundResponse({
+        description: '404. NotFoundException. User was not found',
+    })
+    @Public()
+    @Get('/categories')
+    getCategories() {
+        return this.blogService.getCategories()
+    }
+
     @ApiOperation({summary: 'Write a blog'})
     @Post()
     createBlog(@Request() req, @Body() blog: CreateBlogDto) {
