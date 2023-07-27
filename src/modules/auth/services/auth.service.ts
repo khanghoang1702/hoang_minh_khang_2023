@@ -52,7 +52,6 @@ export class AuthService {
     }
 
     private async tokenGenerator(payload: any) {
-        console.log('payloaadddd', payload)
         const [at, rt] = await Promise.all([
             this.jwtService.signAsync(payload, {
                 secret: jwtConstants.secret,

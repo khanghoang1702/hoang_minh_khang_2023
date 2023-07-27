@@ -59,6 +59,7 @@ export class BlogController {
     @ApiNotFoundResponse({
         description: '404. NotFoundException. User was not found',
     })
+    @Public()
     @Get('/:blogId')
     getBlog(@Param('blogId') blogId: string) {
         return this.blogService.getBlog(blogId)
