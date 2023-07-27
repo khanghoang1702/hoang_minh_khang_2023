@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Request } from '@nestjs/com
 import { CommentService } from '../services/comment.service';
 import { CreateCommentDto } from '../dtos/create-blog.dto';
 import { ApiOperation, ApiParam } from '@nestjs/swagger';
+import {Public} from "../../auth/decorators/public.decorator";
 
 @Controller('comment')
 export class CommentController {
@@ -9,6 +10,7 @@ export class CommentController {
 
     @ApiOperation({ summary: 'Get blog comments' })
     @ApiParam({ name: 'blogId', type: String })
+    @Public()
     @Get('/:blogId')
     getCommentsByBlog(@Param('blogId') blogId: string) {
         return this.commentService.getCommentsByBlog(blogId)
