@@ -1,6 +1,11 @@
 import {IsInt, IsOptional, IsString} from "class-validator";
 import {Type} from "class-transformer";
 
+const enum PaginationDefault {
+    OFFSET = 0,
+    LIMIT = 5
+}
+
 export class BlogCriteriaModel {
     @IsOptional()
     @IsString()
@@ -9,11 +14,11 @@ export class BlogCriteriaModel {
     @IsOptional()
     @IsInt()
     @Type(() => Number)
-    limit?: number ;
+    limit?: number = PaginationDefault.OFFSET;
 
 
     @IsOptional()
     @IsInt()
     @Type(() => Number)
-    offset?: number ;
+    offset?: number = PaginationDefault.LIMIT ;
 }
