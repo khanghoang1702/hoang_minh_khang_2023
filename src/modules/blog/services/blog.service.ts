@@ -40,7 +40,6 @@ export class BlogService {
 
     async getBlogs({keyword, offset, limit}: BlogCriteriaModel) {
         try {
-            const where = {}
             const queryBuilder = this.blogRepository.createQueryBuilder('b')
             if (keyword) {
                 queryBuilder.where('b.title ILIKE :keyword', {keyword: `%${keyword}%`})
@@ -51,14 +50,6 @@ export class BlogService {
                 .orderBy('b.createdAt','DESC')
                 .leftJoinAndSelect('b.author', 'author');
 
-
-            // const [blogs, total]= await this.blogRepository.findAndCount({
-            //     where: where,
-            //     relations: {author: true, category: true},
-            //     skip: offset,
-            //     take: limit,
-            //     order: {createdAt: 'desc'}
-            // });
             const [blogs, total] = await queryBuilder.getManyAndCount()
             const pagination = {offset, limit, total}
             return {blogs, pagination}

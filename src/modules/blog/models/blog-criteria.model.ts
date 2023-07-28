@@ -14,11 +14,11 @@ export class BlogCriteriaModel {
     @IsOptional()
     @IsInt()
     @Type(() => Number)
-    limit?: number = PaginationDefault.OFFSET;
+    limit?: number = PaginationDefault.LIMIT;
 
 
     @IsOptional()
     @IsInt()
     @Type(() => Number)
-    offset?: number = PaginationDefault.LIMIT ;
+    offset?: number = PaginationDefault.OFFSET ;
 }
