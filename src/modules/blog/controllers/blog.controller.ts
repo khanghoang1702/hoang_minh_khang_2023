@@ -1,4 +1,17 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post, Put, UploadedFiles, UseInterceptors, Request} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    Put,
+    UploadedFiles,
+    UseInterceptors,
+    Request,
+    Query, UsePipes, ValidationPipe
+} from '@nestjs/common';
 import {BlogService} from '../services/blog.service';
 import {CreateBlogDto} from '../dtos/create-blog.dto';
 import {UpdateBlogDto} from '../dtos/update-blog.dto';
@@ -22,6 +35,7 @@ import path from 'path';
 import {BlogEntity} from '../entities/blog.entity';
 import {Public} from "../../auth/decorators/public.decorator";
 import {VoteDto} from "../dtos/vote.dto";
+import {BlogCriteriaModel} from "../models/blog-criteria.model";
 
 export const storage = {
     storage: diskStorage({
@@ -47,8 +61,9 @@ export class BlogController {
     })
     @Public()
     @Get()
-    getBlogList() {
-        return this.blogService.getBlogs()
+    @UsePipes(new ValidationPipe({ transform: true }))
+    getBlogList(@Query() query: BlogCriteriaModel) {
+        return this.blogService.getBlogs(query)
     }
 
     @ApiOperation({summary: 'Get categories'})

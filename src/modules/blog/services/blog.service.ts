@@ -2,7 +2,7 @@ import {
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
-import {Repository} from 'typeorm';
+import {Like, Repository} from 'typeorm';
 import {InjectRepository} from "@nestjs/typeorm";
 import {BlogEntity} from '../entities/blog.entity';
 import {CreateBlogDto} from '../dtos/create-blog.dto';
@@ -11,6 +11,7 @@ import {CloudinaryService} from 'src/modules/cloudinary/cloudinary.service';
 import {UpdateBlogImagesDto} from '../dtos/update-blog-images.dto';
 import {UsersService} from "../../users/services/users.service";
 import {CategoriesEntity} from "../entities/categories.entity";
+import {BlogCriteriaModel} from "../models/blog-criteria.model";
 
 @Injectable()
 export class BlogService {
@@ -26,7 +27,7 @@ export class BlogService {
     async createBlog(blog: CreateBlogDto, authorEmail: string, categoryId: string): Promise<BlogEntity> {
         try {
             const author = await this.usersService.findUserByEmail(authorEmail)
-            const category = await this.categoryRepository.findOne({where: {id: categoryId }})
+            const category = await this.categoryRepository.findOne({where: {id: categoryId}})
             const newBlog = {...blog, author, category}
             const blogInstance = await this.blogRepository.create(newBlog)
 
@@ -37,10 +38,30 @@ export class BlogService {
 
     }
 
-    async getBlogs() {
+    async getBlogs({keyword, offset, limit}: BlogCriteriaModel) {
         try {
-            return await this.blogRepository.find({relations: {author: true, category: true}});
+            const where = {}
+            const queryBuilder = this.blogRepository.createQueryBuilder('b')
+            if (keyword) {
+                queryBuilder.where('b.title ILIKE :keyword', {keyword: `%${keyword}%`})
+            }
+            queryBuilder
+                .offset(offset)
+                .limit(limit)
+                .orderBy('b.createdAt','DESC')
+                .leftJoinAndSelect('b.author', 'author');
 
+
+            // const [blogs, total]= await this.blogRepository.findAndCount({
+            //     where: where,
+            //     relations: {author: true, category: true},
+            //     skip: offset,
+            //     take: limit,
+            //     order: {createdAt: 'desc'}
+            // });
+            const [blogs, total] = await queryBuilder.getManyAndCount()
+            const pagination = {offset, limit, total}
+            return {blogs, pagination}
         } catch (error) {
             throw error
         }
