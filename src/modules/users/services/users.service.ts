@@ -7,6 +7,7 @@ import {UpdateUserDto} from "../dtos/update-user.dto";
 import {CloudinaryService} from "../../cloudinary/cloudinary.service";
 import {RolesEntity} from "../entities/roles.entity";
 import {Roles} from "../enums/roles.enum";
+import {BlogCriteriaModel} from "../../blog/models/blog-criteria.model";
 
 @Injectable()
 export class UsersService {
@@ -70,7 +71,7 @@ export class UsersService {
     async updateAvatar(email: string, files: Express.Multer.File[]) {
         const user = await this.findUserByEmail(email);
         let avatarUrl = "";
-        
+
         if (!user) {
             throw new BadRequestException('User dose not exist!');
         }
@@ -82,5 +83,25 @@ export class UsersService {
 
         return avatarUrl;
     }
+
+    async getTopBloggers(limit: number) {
+        try {
+            const queryBuilder = this.usersRepository.createQueryBuilder('u')
+            limit = limit ? limit : limit = 3
+
+            queryBuilder
+                .limit(limit)
+                .select(['u.id AS id', 'u.displayName AS displayName', 'u.email AS email', 'u.avatar AS avatar'])
+                .addSelect('COUNT(blogs.id) as blogCount')
+                .leftJoin('u.blogs', 'blogs')
+                .groupBy('u.id')
+                .orderBy('blogCount', 'DESC')
+
+            return await queryBuilder.execute()
+        } catch (error) {
+            throw error
+        }
+    }
+
 
 }

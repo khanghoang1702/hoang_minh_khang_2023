@@ -2,8 +2,8 @@ import {IsInt, IsOptional, IsString} from "class-validator";
 import {Type} from "class-transformer";
 
 const enum PaginationDefault {
-    OFFSET = 0,
-    LIMIT = 5
+    PAGE = 1,
+    PAGE_SIZE = 5
 }
 
 export class BlogCriteriaModel {
@@ -14,11 +14,11 @@ export class BlogCriteriaModel {
     @IsOptional()
     @IsInt()
     @Type(() => Number)
-    limit?: number = PaginationDefault.LIMIT;
+    pageSize?: number = PaginationDefault.PAGE_SIZE;
 
 
     @IsOptional()
     @IsInt()
     @Type(() => Number)
-    offset?: number = PaginationDefault.OFFSET ;
+    page?: number = PaginationDefault.PAGE ;
 }

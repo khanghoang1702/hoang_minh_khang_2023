@@ -12,6 +12,7 @@ import {UpdateBlogImagesDto} from '../dtos/update-blog-images.dto';
 import {UsersService} from "../../users/services/users.service";
 import {CategoriesEntity} from "../entities/categories.entity";
 import {BlogCriteriaModel} from "../models/blog-criteria.model";
+import {UsersEntity} from "../../users/entities/users.entity";
 
 @Injectable()
 export class BlogService {
@@ -38,25 +39,46 @@ export class BlogService {
 
     }
 
-    async getBlogs({keyword, offset, limit}: BlogCriteriaModel) {
+    async getBlogs({keyword, page, pageSize}: BlogCriteriaModel) {
         try {
             const queryBuilder = this.blogRepository.createQueryBuilder('b')
             if (keyword) {
                 queryBuilder.where('b.title ILIKE :keyword', {keyword: `%${keyword}%`})
             }
+            const skip = (page - 1) * pageSize
             queryBuilder
-                .offset(offset)
-                .limit(limit)
+                .take(pageSize)
+                .skip(skip)
                 .orderBy('b.createdAt','DESC')
-                .leftJoinAndSelect('b.author', 'author');
+                .leftJoinAndSelect('b.author', 'author')
+                .leftJoinAndSelect('b.comments', 'comments');
 
             const [blogs, total] = await queryBuilder.getManyAndCount()
-            const pagination = {offset, limit, total}
+            const pagination = {page, pageSize, total}
             return {blogs, pagination}
         } catch (error) {
             throw error
         }
     }
+
+    async getTopBlogs(limit?: number) {
+        try {
+            limit = limit ? limit : limit = 3
+            const queryBuilder = this.blogRepository.createQueryBuilder('b')
+            queryBuilder
+                .limit(limit)
+                .select(['b.id as id', 'b.likeCount as like', 'b.title as title', 'COUNT(comments) as commentCount'])
+                .leftJoin('comments','comments','b.id = comments.blogId')
+                .groupBy('b.id')
+                .orderBy('commentCount','DESC')
+                .addOrderBy('b.likeCount', 'DESC')
+
+            return await queryBuilder.execute()
+        } catch (error) {
+            throw error
+        }
+    }
+
 
     async getBlog(id: string) {
         try {

@@ -76,6 +76,13 @@ export class BlogController {
         return this.blogService.getCategories()
     }
 
+    @Public()
+    @Get('/top-blogs')
+    @UsePipes(new ValidationPipe({ transform: true }))
+    getTopBlogs(@Query('limit') limit: number) {
+        return this.blogService.getTopBlogs(limit)
+    }
+
     @ApiOperation({summary: 'Get blog detail'})
     @ApiParam({name: 'blogId', type: String})
     @ApiOkResponse({
