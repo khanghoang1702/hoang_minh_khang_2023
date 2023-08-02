@@ -21,12 +21,11 @@ export class UsersService {
 
     async findUserByEmail(email: string) {
         try {
-            const res = await this.usersRepository.findOne({
+            return await this.usersRepository.findOne({
                 where: {email}, relations: {
                     role: true
                 }
             })
-            return res
         } catch (e) {
             throw new Error(e);
         }
@@ -34,8 +33,7 @@ export class UsersService {
 
     async findOne(id: string) {
         try {
-            const res = await this.usersRepository.findOne({where: {id}})
-            return res
+            return  await this.usersRepository.findOne({where: {id}})
         } catch (e) {
             throw new Error(e);
         }
@@ -47,10 +45,7 @@ export class UsersService {
             const role = await this.rolesRepository.findOne({where: {type: Roles.User}});
             dto['role'] = role
             const createdUser = this.usersRepository.create(dto);
-            console.log(createdUser, 'dddddddddddd')
-            const res = await this.usersRepository.save(createdUser);
-
-            return res
+            return await this.usersRepository.save(createdUser);
         } catch (e) {
             throw new Error(e);
         }

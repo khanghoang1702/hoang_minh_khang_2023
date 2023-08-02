@@ -2,17 +2,15 @@ import {
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
-import {Like, Repository} from 'typeorm';
+import { Repository} from 'typeorm';
 import {InjectRepository} from "@nestjs/typeorm";
 import {BlogEntity} from '../entities/blog.entity';
 import {CreateBlogDto} from '../dtos/create-blog.dto';
 import {UpdateBlogDto} from '../dtos/update-blog.dto';
 import {CloudinaryService} from 'src/modules/cloudinary/cloudinary.service';
-import {UpdateBlogImagesDto} from '../dtos/update-blog-images.dto';
 import {UsersService} from "../../users/services/users.service";
 import {CategoriesEntity} from "../entities/categories.entity";
 import {BlogCriteriaModel} from "../models/blog-criteria.model";
-import {UsersEntity} from "../../users/entities/users.entity";
 
 @Injectable()
 export class BlogService {
@@ -179,9 +177,7 @@ export class BlogService {
 
     async getCategories(): Promise<CategoriesEntity[]> {
         try {
-            const category = await this.categoryRepository.find();
-
-            return category
+            return await this.categoryRepository.find();
         } catch (error) {
             throw error
         }
