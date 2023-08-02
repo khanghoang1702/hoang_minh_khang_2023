@@ -1,4 +1,4 @@
-import {Column, Entity, JoinColumn, OneToMany, OneToOne} from 'typeorm';
+import {Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne} from 'typeorm';
 import {TypeOrmBaseEntity} from "../../../commons/abstract-entity/type-orm-base-entity.entity";
 import {RolesEntity} from "./roles.entity";
 import {BlogEntity} from "../../blog/entities/blog.entity";
@@ -19,8 +19,7 @@ export class UsersEntity extends TypeOrmBaseEntity {
     @Column({type: 'varchar', nullable: true})
     avatar: string;
 
-    @OneToOne(() => RolesEntity)
-    @JoinColumn()
+    @ManyToOne(() => RolesEntity)
     role: RolesEntity;
 
     @OneToMany(()=> BlogEntity, (blog) => blog.author)

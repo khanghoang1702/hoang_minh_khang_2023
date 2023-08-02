@@ -83,6 +83,16 @@ export class BlogController {
         return this.blogService.getTopBlogs(limit)
     }
 
+    @ApiOperation({summary: 'Get blog list of a user'})
+    @ApiOkResponse({
+        description: '200. Success. Returns blog list',
+    })
+    @Get('/user-blog/:userId')
+    @UsePipes(new ValidationPipe({ transform: true }))
+    getUserBlogs(@Param('userId') userId: string, @Query() query: BlogCriteriaModel) {
+        return this.blogService.getUserBlogs(userId, query)
+    }
+
     @ApiOperation({summary: 'Get blog detail'})
     @ApiParam({name: 'blogId', type: String})
     @ApiOkResponse({

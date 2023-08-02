@@ -21,7 +21,11 @@ export class UsersService {
 
     async findUserByEmail(email: string) {
         try {
-            const res = await this.usersRepository.findOne({where: {email}})
+            const res = await this.usersRepository.findOne({
+                where: {email}, relations: {
+                    role: true
+                }
+            })
             return res
         } catch (e) {
             throw new Error(e);
@@ -92,10 +96,10 @@ export class UsersService {
             queryBuilder
                 .limit(limit)
                 .select(['u.id AS id', 'u.displayName AS displayName', 'u.email AS email', 'u.avatar AS avatar'])
-                .addSelect('COUNT(blogs.id) as blogCount')
+                .addSelect('COUNT(blogs.id) as blogs')
                 .leftJoin('u.blogs', 'blogs')
                 .groupBy('u.id')
-                .orderBy('blogCount', 'DESC')
+                .orderBy('blogs', 'DESC')
 
             return await queryBuilder.execute()
         } catch (error) {

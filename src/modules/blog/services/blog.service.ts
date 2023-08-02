@@ -61,16 +61,40 @@ export class BlogService {
         }
     }
 
+    async getUserBlogs(userId, {keyword, page, pageSize}: BlogCriteriaModel) {
+        try {
+            const queryBuilder = this.blogRepository.createQueryBuilder('b')
+            if (keyword) {
+                queryBuilder.where('b.title ILIKE :keyword', {keyword: `%${keyword}%`})
+            }
+            const skip = (page - 1) * pageSize
+            queryBuilder
+                .take(pageSize)
+                .skip(skip)
+                .where('b.authorId = :userId', {userId: userId})
+                .orderBy('b.createdAt','DESC')
+                .leftJoinAndSelect('b.comments', 'comments');
+
+            const [blogs, total] = await queryBuilder.getManyAndCount()
+            const pagination = {page, pageSize, total}
+            return {blogs, pagination}
+        } catch (error) {
+            throw error
+        }
+    }
+
     async getTopBlogs(limit?: number) {
         try {
             limit = limit ? limit : limit = 3
             const queryBuilder = this.blogRepository.createQueryBuilder('b')
             queryBuilder
                 .limit(limit)
-                .select(['b.id as id', 'b.likeCount as like', 'b.title as title', 'COUNT(comments) as commentCount'])
+                .select(['b.id as id', 'b.likeCount as like', 'b.title as title', 'author.id as authorId', 'author.displayName as displayName','COUNT(comments) as comments'])
+                .leftJoin('b.author', 'author')
                 .leftJoin('comments','comments','b.id = comments.blogId')
                 .groupBy('b.id')
-                .orderBy('commentCount','DESC')
+                .addGroupBy('author.id')
+                .orderBy('comments','DESC')
                 .addOrderBy('b.likeCount', 'DESC')
 
             return await queryBuilder.execute()
@@ -98,7 +122,7 @@ export class BlogService {
     async updateBlog(id: string, blog: UpdateBlogDto) {
         try {
             const oldBlog = await this.getBlog(id);
-            const updateBlog = {...oldBlog, blog};
+            const updateBlog = {...oldBlog, ...blog};
             const preloadBlog = await this.blogRepository.preload(updateBlog);
             return await this.blogRepository.save(preloadBlog);
         } catch (error) {

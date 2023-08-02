@@ -18,7 +18,7 @@ export class CommentController {
 
     @ApiOperation({ summary: 'Create a comment' })
     @Post()
-    comment(@Request() req,@Body() comment: CreateCommentDto) {
+    comment(@Request() req, @Body() comment: CreateCommentDto) {
         const email = req.user?.email;
         const blogId = comment.blog
         delete comment.blog
